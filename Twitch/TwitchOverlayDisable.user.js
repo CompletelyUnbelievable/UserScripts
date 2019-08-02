@@ -46,6 +46,7 @@ class TwitchOverlayDisable{
     }
 
     static defineObserver(){
+        this.removeObserver();
         var observer=new MutationObserver(function(mutations){
             mutations.forEach(function(mutation){
                 if(!mutation.addedNodes||mutation.addedNodes.length===0)return;
@@ -84,23 +85,21 @@ class TwitchOverlayDisable{
     static findReactHandler(el=undefined){
 		if(el&&el instanceof Element&&Object.keys(el).length>0){
             let instance=Object.keys(el).filter((v)=>{if(v&&v.constructor===String&&v.toLowerCase().includes('__reacteventhandlers'))return v;})[0];
-            if(instance){
-                return el[instance];
-            }
+            if(instance)return el[instance];
 		}
 		return null;
 	}
 
     static WebModulesFind(filter){
-        const id = "Test-WebModules";
-        const req = typeof(global.window.webpackJsonp) == "function" ? global.window.webpackJsonp([], {[id]: (module, exports, req) => exports.default = req}, [id]).default : global.window.webpackJsonp.push([[], {[id]: (module, exports, req) => module.exports = req}, [[id]]]);
+        const id="Test-WebModules";
+        const req=typeof(global.window.webpackJsonp)=="function"?global.window.webpackJsonp([],{[id]:(module,exports,req)=>exports.default=req},[id]).default:global.window.webpackJsonp.push([[],{[id]:(module,exports,req)=>module.exports=req},[[id]]]);
         delete req.m[id];
         delete req.c[id];
-        for (let m in req.c) {
-            if (req.c.hasOwnProperty(m)) {
-                var module = req.c[m].exports;
-                if (module && module.__esModule && module.default && filter(module.default)) return module.default;
-                if (module && filter(module)) return module;
+        for(let m in req.c){
+            if(req.c.hasOwnProperty(m)){
+                var module=req.c[m].exports;
+                if(module&&module.__esModule&&module.default&&filter(module.default))return module.default;
+                if(module&&filter(module))return module;
             }
         }
     }
@@ -108,10 +107,10 @@ class TwitchOverlayDisable{
     static WebModulesFindByProperties(properties){
         if(!properties)return undefined;
         if(properties.constructor===String)properties=[properties];
-        return this.WebModulesFind(module => properties.every(prop => module[prop] !== undefined));
+        return this.WebModulesFind(module=>properties.every(prop=>module[prop]!==undefined));
     }
 
-    static require(moduleName=''){
+    static require(moduleName=undefined){
         if(moduleName&&moduleName.constructor===String){
             switch(moduleName.toLowerCase()){
                 case'react':
@@ -121,10 +120,11 @@ class TwitchOverlayDisable{
                 case'react-dom':
                 case'domreact':
                 case'dom-react':
-                    return this.WebModulesFindByProperties('render','unmountComponentAtNode','findDOMNode','createPortal')
+                    return this.WebModulesFindByProperties('render','unmountComponentAtNode','findDOMNode','createPortal');
                     break;
             }
         }
+        return undefined;
     }
 
     static HtmlCollectionToArray(context=document,selectors=[]){//Believe it or not, this seems to be up to 2x faster than jquery's .find() even when the returned array of elements is wrapped with jquery. More performance testing required.
