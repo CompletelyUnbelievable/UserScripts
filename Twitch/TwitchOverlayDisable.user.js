@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch Overlay Disable
 // @namespace    https://github.com/CompletelyUnbelievable
-// @updateURL    https://github.com/CompletelyUnbelievable/UserScripts/blob/master/Twitch/TwitchOverlayDisable.user.js
+// @updateURL    https://raw.githubusercontent.com/CompletelyUnbelievable/UserScripts/master/Twitch/TwitchOverlayDisable.user.js
 // @version      1.2
 // @description  Attempts to disable the overlay extensions on the twitch player automatically on Twitch.tv
 // @author       CompletelyUnbelievable
