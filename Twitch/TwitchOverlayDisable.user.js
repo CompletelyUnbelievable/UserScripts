@@ -83,14 +83,18 @@ class TwitchOverlayDisable{
 	}
 
     static findReactHandler(el=undefined){
-		if(el&&el instanceof Element&&Object.keys(el).length>0){
+        if(el&&el instanceof Element&&Object.keys(el).length>0){
             let instance=Object.keys(el).filter((v)=>{if(v&&v.constructor===String&&v.toLowerCase().includes('__reacteventhandlers'))return v;})[0];
             if(instance)return el[instance];
-		}
-		return null;
-	}
+        }
+        return null;
+    }
 
     static WebModulesFind(filter){
+        if(!global.window.webpackJsonp){
+            console.log(`[${this.config.info.name}] Cannot find webpack modules (webpackJsonp) in relation to the window.`);
+            return undefined;
+        }
         const id="Test-WebModules";
         const req=typeof(global.window.webpackJsonp)=="function"?global.window.webpackJsonp([],{[id]:(module,exports,req)=>exports.default=req},[id]).default:global.window.webpackJsonp.push([[],{[id]:(module,exports,req)=>module.exports=req},[[id]]]);
         delete req.m[id];
