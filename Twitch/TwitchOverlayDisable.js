@@ -2,7 +2,7 @@
 // @name         Twitch Overlay Disable
 // @namespace    https://github.com/CompletelyUnbelievable
 // @updateURL    https://raw.githubusercontent.com/CompletelyUnbelievable/UserScripts/master/Twitch/TwitchOverlayDisable.user.js
-// @version      1.2
+// @version      1.3
 // @description  Attempts to disable the overlay extensions on the twitch player automatically on Twitch.tv
 // @author       CompletelyUnbelievable
 // @match        https://www.twitch.tv/*
@@ -16,8 +16,12 @@ var global=global||globalThis||window;
 class TwitchOverlayDisable{
 
     static constructor(){
+        this.template=this.parseHTML(`<template></template>`)[0];//Storage away form the document
         this.observerObj=this.defineObserver();
-        this.config={debug:false,debugClick:false,timer:false,info:{name:'TwitchOverlayDisable',description:'Disable extension buttons for the Twitch player',version:'1.2'}}; //Temp settings.
+        this.styleSheet=this.parseHTML(`<style>.player-root .extensions-dock__layout{display:none!important;}</style>`)[0];
+        this.playerButton=this.parseHTML(`<button class="TwitchOverlayDisable player-button" type="button"><span class="player-tip js-control-tip" data-tip="Click to Hide Extension Button(s)"></span><span class="pl-settings-icon"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 950 950" style="enable-background:new 0 0 487.7 487.7;display:block;top:calc(50% - 12.5px);left:calc(50% - 8.12px);" xml:space="preserve"><g><g><path d="M448.15,322.8c-9,8-21.8,4.5-21.8-11.1v-37.5c0-11.3-9.3-20.6-20.6-20.6h-26.3c3,6.1,4.6,12.7,4.6,19.3 c0,23.1-18,40.6-42.8,41.6h-0.8h-0.8c-24.8-1-42.8-18.5-42.8-41.6c0-6.7,1.6-13.3,4.6-19.3h-27.4h-0.1h-0.4 c-11.1,0-20.2,9-20.2,20.2v37.9c0,15.6-13,19-22,11.1c-14.9-13.1-37.6-6.1-38.6,17.8c1,23.9,23.7,30.9,38.5,17.8 c9-8,22.1-4.5,22.1,11.1v37.1c0,11.1,9,20.2,20.2,20.2h37.6c15.6,0,19,13.1,11.1,22.1c-13.1,14.9-6.1,37.8,17.8,38.8 c23.9-1,30.9-23.9,17.8-38.8c-8-9-4.5-22.2,11.1-22.2h37.4c11.1,0,20.2-9,20.2-20.2v-37.1c0-15.6,12.7-19,21.7-11.1 c14.7,13.1,37.4,6.1,38.4-17.7C485.65,316.7,463.05,309.7,448.15,322.8z"/></g></g><g><g><path d="M448.35,129.3c-9,8-22.2,4.5-22.2-11.1V81c0-11.1-9-20.2-20.2-20.2h-37.1c-15.6,0-19-12.7-11.1-21.7 c13.1-14.9,6.1-37.6-17.8-38.6c-23.9,1-30.9,23.6-17.8,38.5c8,9,4.5,21.8-11.1,21.8h-37.5c-11.3,0-20.6,9.3-20.6,20.6v26.3 c6.1-3,12.7-4.6,19.3-4.6c23.2,0,40.7,18,41.7,42.8v0.8v0.8c-1,24.8-18.5,42.8-41.6,42.8c-6.7,0-13.3-1.6-19.3-4.6v27.4v0.1v0.4 c0,11.1,9,20.2,20.2,20.2h37.9c15.6,0,19,13,11.1,22c-13.1,14.9-6.1,37.6,17.8,38.6c23.9-1,30.9-23.7,17.8-38.5 c-8-9-4.5-22.1,11.1-22.1h37.1c11.1,0,20.2-9,20.2-20.2V176c0-15.6,13.1-19,22.1-11.1c14.9,13.1,37.8,6.1,38.8-17.8 C486.15,123.2,463.25,116.2,448.35,129.3z"/></g></g><g><g><path d="M214.45,253.3h-37.9c-15.6,0-19-13-11.1-22c13.1-14.9,6.1-37.6-17.8-38.6c-23.9,1-30.9,23.7-17.8,38.5 c8,9,4.5,22.1-11.1,22.1h-37.1c-11.1,0-20.2,9-20.2,20.2v37.6c0,15.6-13.1,19-22.1,11.1c-14.9-13.1-37.8-6.1-38.8,17.8 c0.9,23.7,23.9,30.7,38.7,17.6c9-8,22.2-4.5,22.2,11.1v37.4c0,11.1,9,20.2,20.2,20.2h37.1c15.6,0,19,12.7,11.1,21.7 c-13.1,14.9-6.1,37.6,17.8,38.6c23.9-1,30.9-23.6,17.8-38.5c-8-9-4.5-21.8,11.1-21.8h37.5c11.3,0,20.6-9.3,20.6-20.6v-26.3 c-6.1,3-12.7,4.6-19.3,4.6c-23.1,0-40.6-18-41.6-42.8v-0.8v-0.8c1-24.8,18.5-42.8,41.6-42.8c6.7,0,13.3,1.6,19.3,4.6V274v-0.1 v-0.4C234.65,262.4,225.65,253.3,214.45,253.3z"/></g></g><g><g><path d="M256.45,129.2c-9,8-22.1,4.5-22.1-11.1v-37c0-11.1-9-20.2-20.2-20.2h-37.6c-15.6,0-19-13.1-11.1-22.1 c13.1-14.9,6.1-37.8-17.8-38.8c-23.9,1-30.9,23.9-17.8,38.8c8,9,4.5,22.2-11.1,22.2h-37.2c-11.1,0-20.2,9-20.2,20.2v37.1 c0,15.6-12.7,19-21.7,11.1c-14.9-13.1-37.6-6.1-38.6,17.8c1,23.7,23.6,30.7,38.5,17.6c9-8,21.8-4.5,21.8,11.1v37.5 c0,11.3,9.3,20.6,20.6,20.6h26.3c-3-6.1-4.6-12.7-4.6-19.3c0-23.1,18-40.6,42.8-41.6h0.8h0.8c24.8,1,42.8,18.5,42.8,41.6 c0,6.7-1.6,13.3-4.6,19.3h27.4h0.1h0.4c11.1,0,20.2-9,20.2-20.2v-37.9c0-15.6,13-19,22-11.1c14.9,13.1,37.6,6.1,38.6-17.8 C293.95,123.1,271.25,116.1,256.45,129.2z"/></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg></span></button>`)[0];
+        this.playerButton.addEventListener('click',function(){if(document.contains(this.styleSheet))this.template.prepend(this.styleSheet);else document.head.append(this.styleSheet);}.bind(this));
+        this.config={debug:false,debugClick:false,observerDebug:false,href:global.location.href,timer:false,info:{name:'TwitchOverlayDisable',description:'Disable extension buttons for the Twitch player',version:'1.3'}}; //Temp settings.
     }
 
     static onStart(){
@@ -63,24 +67,32 @@ class TwitchOverlayDisable{
 
     static observer({addedNodes}){
         if(addedNodes&&addedNodes[0]&&addedNodes[0] instanceof Element){
-            if(addedNodes[0].querySelector('.extensions-dock__dock img.tw-image')){
+            let areExtensions=addedNodes[0].querySelector('.extensions-dock__dock img.tw-image');
+            if(this.config.observerDebug)console.log(addedNodes[0]);
+            if('https://www.twitch.tv/'!==global.location.href&&this.config.href!==global.location.href&&!areExtensions){
+                this.config.href=global.location.href;
+                this.template.append(this.playerButton);
+                this.template.append(this.styleSheet);
+            }
+            if(areExtensions){
                 let ele=document.querySelector(`.player-root .tw-c-text-overlay`);
                 if(ele)this.findReactHandler(ele).children._owner.return.stateNode.context.setOverlayVisibility(false);
+                document.querySelector(`.player-root .player-buttons-right`).prepend(this.playerButton);
             }
         }
     }
 
     static findReactComponent(el=undefined){
-        if(el&&el instanceof Element&&Object.keys(el).length>0){
+		if(el&&el instanceof Element&&Object.keys(el).length>0){
             let instance=Object.keys(el).filter((v)=>{if(v&&v.constructor===String&&v.toLowerCase().includes('__reactinternalinstance'))return v;})[0];
             if(instance){
                 const fiberNode=el[instance];
                 if((fiberNode&&fiberNode.return&&fiberNode.return.stateNode)instanceof Element)return this.findReactComponent(fiberNode&&fiberNode.return&&fiberNode.return.stateNode);
                 else return fiberNode&&fiberNode.return&&fiberNode.return.stateNode;
             }
-        }
-        return null;
-    }
+		}
+		return null;
+	}
 
     static findReactHandler(el=undefined){
         if(el&&el instanceof Element&&Object.keys(el).length>0){
@@ -157,6 +169,15 @@ class TwitchOverlayDisable{
 			}
         }
         return[];
+    }
+
+    static parseHTML(html=[]){
+        if(html.constructor===String&&/(<[^<>]+>)/g.test(html)){
+            var template=document.createElement('template');
+            template.innerHTML=html.trim();
+            return template.content.childNodes;
+        }
+        return null;
     }
 
     /*static disableButtons(){
