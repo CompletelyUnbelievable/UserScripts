@@ -54,7 +54,7 @@ class TwitchOverlayDisable{
 
     static observer({addedNodes}){
         if(addedNodes&&addedNodes[0]&&addedNodes[0] instanceof Element){
-            let areExtensions=addedNodes[0].getElementsByClassName('extensions-dock__dock')[0];
+            let areExtensions=addedNodes[0].querySelector('.extensions-dock__dock .extensions-dock-card');
             if(areExtensions){
                 if(this.config.hideExtensionsByDefault&&this.template.contains(this.styleSheet))document.head.append(this.styleSheet);
                 let ele=document.querySelector(`.persistent-player .resize-detector+.tw-c-text-overlay`);
