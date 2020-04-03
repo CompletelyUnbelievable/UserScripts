@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name         VRCMods Is Pepega
 // @namespace    https://github.com/CompletelyUnbelievable
+// @updateURL    https://raw.githubusercontent.com/CompletelyUnbelievable/UserScripts/master/VRCMods/VRCModsIsPepega.user.js
 // @version      0.1
 // @description  No effort needed, when they offer the solution to the issue as a function on the page. Probably best if you just disable your AdBlock for their website but if they make it this easy to bypass even I'm gonna bypass it.
 // @author       CompletelyUnbelievable
