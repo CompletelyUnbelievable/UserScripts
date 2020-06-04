@@ -5,6 +5,10 @@
 // @version      0.1
 // @description  No effort needed, when they offer the solution to the issue as a function on the page. Probably best if you just disable your AdBlock for their website but if they make it this easy to bypass even I'm gonna bypass it.
 // @author       CompletelyUnbelievable
+// @match        https://vrcmods.com/item/*
+// @match        http://vrcmods.com/item/*
+// @match        https://vrcmods.com/download/*
+// @match        http://vrcmods.com/download/*
 // @match        https://www.vrcmods.com/item/*
 // @match        http://www.vrcmods.com/item/*
 // @match        https://www.vrcmods.com/download/*
